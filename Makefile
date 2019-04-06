@@ -1,11 +1,14 @@
 .PHONY: clean
 FLAGS = --std=c++1y
 all:
-	g++ ${FLAGS} quicksort.cpp activityNotify.cpp -o notify
+	g++ ${FLAGS} MyArray.cpp activityNotify.cpp -o notify
 
-test:
-	g++ ${FLAGS} quicksort.cpp quicksort_test.cpp -o quicksort
+qs_test:
+	g++ ${FLAGS} MyArray.cpp quicksort_test.cpp -o quicksort_test
+
+cs_test:
+	g++ ${FLAGS} MyArray.cpp counting_test.cpp -o countingsort_test
 
 clean:
-	rm -f quicksort notify a.out
+	rm -f quicksort_test countingsort_test notify a.out
 

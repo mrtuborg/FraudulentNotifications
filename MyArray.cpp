@@ -1,5 +1,5 @@
 #include <iostream>
-#include "quicksort.h"
+#include "MyArray.hpp"
 
 inline void myArray::xchg(int *x, int *y)
 {
@@ -12,7 +12,7 @@ inline void myArray::xchg(int *x, int *y)
 
 }
 
-inline void myArray::printArray (int start, int end)
+void myArray::printArray (void *in, int start, int end)
 {
     if ((start == -1 ) || (end == -1))
     {
@@ -21,9 +21,14 @@ inline void myArray::printArray (int start, int end)
     }
 
     for (int i = start; i <= end; i++)
-          std::cout << arr[i] << " ";
+          std::cout << ((int*)in)[i] << " ";
 
     std::cout << std::endl;
+}
+
+void myArray::printArray()
+{
+     printArray(arr);
 }
 
 int myArray::hoare_partitionning(int left, int right)
@@ -51,7 +56,7 @@ int myArray::hoare_partitionning(int left, int right)
         if (  i >= j ) break;
         
         xchg(&arr[i], &arr[j]);
-        printArray(left, right); 
+        printArray(arr, left, right); 
     } while (true);
     
     return j;
@@ -64,7 +69,7 @@ int myArray::lomuto_partitionning(int left, int right)
     
     std::cout << "iter: " << iter << std::endl;
     std::cout << "pivot: " << pivot << std::endl;
-    printArray(left, right);
+    printArray(arr, left, right);
 
 	for (int i = left; i < right; i++)
 	{
@@ -72,14 +77,14 @@ int myArray::lomuto_partitionning(int left, int right)
             std::cout << arr[i] << " <= " << pivot << std::endl;
             iter++;
             xchg(&arr[i], &arr[iter]);
-            printArray(left, right);
+            printArray(arr, left, right);
             std::cout << "iter: " << iter << std::endl;
         } else std::cout << arr[i] << " > " << pivot << std::endl;
     }
 
     xchg(&arr[iter + 1], &arr[right]);
 
-    printArray(left, right);
+    printArray(arr, left, right);
     std::cout << "========" << iter + 1 << "==========" << std::endl;
 
     return iter + 1;
@@ -113,10 +118,76 @@ int myArray::hoare_quicksort(int start, int end)
      return 0;
  }
 
-
-int myArray::sort()
+int myArray::count_array(int *out, int k)
 {
-    return hoare_quicksort(0, size - 1);
+    for ( int j = 0; j < k;    j++ ) out[j] = 0;
+    for ( int i = 0; i < size; i++ ) out[arr[i]]++;
+
+    printf(" Count array: ");
+    printArray(out,  0, k - 1);
+
+    // Wave-count array
+    for ( int j = 1; j < k; j++ ) out[j] += out[j-1];
+
+    printf(" Wave-count array: ");
+    printArray(out,  0, k - 1);
+
+    return 0;
+
+}
+
+int myArray::findMax(int *in, int sz)
+{
+    int max = in[0];
+    for (int i = 1; i < sz; i++) if (in[i] > max) max = in[i];
+
+    return max;
+}
+
+int myArray::counting_sort(int start, int end)
+{
+    int k = findMax(arr, size) + 1;
+    std::cout << "k = " << k << std::endl;
+    int n = end - start + 1;
+    int *output = new int[n];
+    int *count  = new int[n+k];
+
+    count_array(count, k);
+
+    for ( int i = n-1; i >= 0; i-- )
+    {
+        int out_value = arr[i];
+        int out_index = --count[out_value];
+        output[out_index] = out_value;
+    }
+
+    std::memcpy(arr + start, output, n * sizeof(int));
+
+    delete[](output);
+    delete[](count);
+
+    return 0;
+}
+
+int myArray::sort(myArray::sort_t type)
+{
+    int result = 0;
+    switch (type)
+    {
+        case QUICK_SORT_HOARE:
+            result = hoare_quicksort(0, size - 1);
+            break;
+
+        case QUICK_SORT_LOMUTO:
+            result = lomuto_quicksort(0, size - 1);
+            break;
+
+        case COUNTING_SORT:
+            result = counting_sort(0, size - 1);
+            break;
+    }
+        
+    return result;
 }
 
 float myArray::median()

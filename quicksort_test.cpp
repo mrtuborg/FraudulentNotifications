@@ -1,5 +1,5 @@
 #include <iostream>
-#include "quicksort.h"
+#include "MyArray.hpp"
 
 int main(int args, char *argv[])
 {
@@ -7,7 +7,7 @@ int main(int args, char *argv[])
     
     myArray *a = new myArray(arr, ARRAY_SIZE(arr));
     a->printArray();
-    a->sort();
+    a->sort(myArray::sort_t::QUICK_SORT_HOARE);
     a->printArray();
     std::cout << "Median: " << a->median() << std::endl;
     delete(a);
