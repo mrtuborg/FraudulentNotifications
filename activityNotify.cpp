@@ -1,5 +1,5 @@
 #include "stdc++.h"
-#include "quicksort.h"
+#include "MyArray.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -18,6 +18,8 @@ int activityNotifications(vector<int> expenditure, int d) {
 
     float median = 0;
     int warnings = 0;
+
+    myArray *a =  new myArray(expenditure.data(), expenditure.size());
 
     for(int n : expenditure)
     {   
