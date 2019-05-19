@@ -16,7 +16,8 @@ int main(int args, char *argv[])
     myQueue *b = new myQueue();
     b->addItem(arr, ARRAY_SIZE(arr));
     b->printQueue();
-    b->sort(myQueue::sort_t::QUICK_SORT_HOARE);
+    b->xchg(b->arr[2], b->arr[6]);
+    // b->sort(myQueue::sort_t::QUICK_SORT_HOARE);
     b->printQueue();
     delete(b);
 

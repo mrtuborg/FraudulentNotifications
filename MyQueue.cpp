@@ -107,29 +107,56 @@ inline void myQueue::xchg(queue_node_t *x, queue_node_t *y)
      */
 
     /* With pointers: */
-    arr[x->index] = y;
-    arr[y->index] = x;
+    // arr[x->index] = y;
+    // arr[y->index] = x;
 
-    queue_node_t *old_y_prev = y->prev;
-    queue_node_t *old_y_next = y->next;
-    queue_node_t *old_x_prev = x->prev;
-    queue_node_t *old_x_next = x->next;
-    size_t old_x_index = x->index;
-    size_t old_y_index = y->index;
+    queue_node_t *z;
+    queue_node_t *yprev = y->prev;
+    queue_node_t *ynext = y->next;
+    queue_node_t *xprev = x->prev;
+    queue_node_t *xnext = x->next;
+
+    std::cout << "head: " << head << std::endl;
+    std::cout << "x: " << x << std::endl;
+    std::cout << "y: " << y << std::endl;
+
+    std::cout << "x[" << x->prev->next->index << "]: " << x->prev->next->value << std::endl;
+    std::cout << "y[" << y->prev->next->index << "]: " << y->prev->next->value << std::endl;
+
+    std::cout << "x->next: " << x->next << ", x->prev: " << x->prev << std::endl;
+    std::cout << "y->next: " << y->next << ", y->prev: " << y->prev << std::endl;
+
+    /* yprev->next = x; +
+    x->prev = yprev;
+    x->next = ynext; +
+    ynext->prev = x;
+
+    xprev->next = y; +
+    y->prev = xprev; +
+    y->next = xnext;
+    xnext->prev= y; */
     
-    x->prev->next = y;       // y will be on the old place of x
-    y->prev  = old_x_prev;    // x->prev will point to where old y->prev was pointing  
-    y->next  = old_x_next;
-    y->index = old_x_index;
+    z = x;
+    x = y;
+    y = z;
 
-    old_y_prev->next = x;    // x will be on the old place of y
-    x->prev  = old_y_prev;    // x->prev will point to where old y->prev was pointing
-    x->next  = old_y_next;
-    x->index = old_y_index;
+    y->prev = yprev;
+    y->next = ynext;
+    x->prev = xprev;
+    x->next = xnext;
+
+    std::cout << "x: " << x << std::endl;
+    std::cout << "y: " << y << std::endl;
+
+    std::cout << "x[" << x->prev->next->index << "]: " << x->prev->next->value << std::endl;
+    std::cout << "y[" << y->prev->next->index << "]: " << y->prev->next->value << std::endl;
+
+    std::cout << "x->next: " << x->next << ", x->prev: " << x->prev << std::endl;
+    std::cout << "y->next: " << y->next << ", y->prev: " << y->prev << std::endl;
 
 }
 
-void myQueue::printQueue (void *in, int start, int end)
+void myQueue::printDequeue (void *in, int start, int end)
 {
     if ((start == -1 ) || (end == -1))
     {
@@ -143,10 +170,35 @@ void myQueue::printQueue (void *in, int start, int end)
     std::cout << std::endl;
 }
 
+void myQueue::printDequeue()
+{
+     printDequeue(head);
+}
+
+void myQueue::printQueue (void *in, int start, int end)
+{
+    if ((start == -1 ) || (end == -1))
+    {
+        start = 0;
+        end = size -1;
+    }
+
+    myQueue::queue_node_t *node = (myQueue::queue_node_t *)in;
+
+    for (int i = start; i <= end && node->next; i++, node = node->next)
+    {
+        std::cout << "[" << node->index << "]: " << node->value << " " << std::endl;
+        if (node == node->next) std::cout << "Infinite loop detected!!!" << std::endl;
+    }
+
+    std::cout << std::endl;
+}
+
 void myQueue::printQueue()
 {
-     printQueue(head);
+     printQueue(head->next);
 }
+
 
 int myQueue::hoare_partitionning(int left, int right)
 {
@@ -154,7 +206,7 @@ int myQueue::hoare_partitionning(int left, int right)
     int j = right + 1;
     int pivot = arr[(i + j) / 2]->value;
 
-    std::cout << "pivot = " << pivot << std::endl;
+    std::cout << "pivot = [" << (i + j) / 2 << "]: " << pivot << std::endl;
     std::cout << "i,j = " << i << "," << j << std::endl;
 
     do {
@@ -166,17 +218,17 @@ int myQueue::hoare_partitionning(int left, int right)
         
         do {
             j--;
-          //  std::cout << arr[j]->value << std::endl;
+            // std::cout << arr[j]->value << std::endl;
         } while (j > i && arr[j]->value > pivot);
         // std::cout << "j = " << j << std::endl;
 
         if (  i >= j ) break;
         
         xchg(arr[i], arr[j]);
-        printQueue(head, left, right); 
+        printQueue(head->next, left, right); 
     } while (true);
     
-    printQueue(head, left, right);
+    printQueue(head->next, left, right);
 
     return j;
 }
@@ -300,10 +352,9 @@ int myQueue::sort(myQueue::sort_t type)
         case QUICK_SORT_LOMUTO:
             result = lomuto_quicksort(0, size - 1);
             break;
-
-//        case COUNTING_SORT:
-//            result = counting_sort(0, size - 1);
-//            break;
+        case COUNTING_SORT:
+            // result = counting_sort(0, size - 1);
+            break;
     }
         
     return result;
