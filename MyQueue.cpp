@@ -140,10 +140,19 @@ inline void myQueue::xchg(queue_node_t *x, queue_node_t *y)
     x = y;
     y = z;
 
-    y->prev = yprev;
+    // y->prev = 
+    yprev->next = y;
     y->next = ynext;
-    x->prev = xprev;
+    //y->next = 
+    ynext->prev = y;
+    y->prev = yprev;
+
+    //x->prev =
+    xprev->next = x;
     x->next = xnext;
+    //x->next = 
+    xnext->prev = x;
+    x->prev = xprev;
 
     std::cout << "x: " << x << std::endl;
     std::cout << "y: " << y << std::endl;

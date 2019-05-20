@@ -19,6 +19,8 @@ int main(int args, char *argv[])
     b->xchg(b->arr[2], b->arr[6]);
     // b->sort(myQueue::sort_t::QUICK_SORT_HOARE);
     b->printQueue();
+    b->xchg(b->arr[8], b->arr[9]);
+    b->printQueue();
     delete(b);
 
 	return 0;
